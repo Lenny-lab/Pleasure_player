@@ -153,7 +153,7 @@ music://app/Users/foo/.../track.flac
 The project ships with `electron-builder` configured for all three platforms.
 
 ```bash
-npm run build:mac      # → dist/Pleasure-0.1.0-arm64.dmg + .dmg
+npm run build:mac      # → dist/Pleasure-0.1.0-arm64.dmg (Apple Silicon only)
 npm run build:win      # → dist/Pleasure-0.1.0-x64.exe (NSIS installer)
 npm run build:linux    # → dist/Pleasure-0.1.0-x64.AppImage + .deb
 ```
@@ -171,7 +171,7 @@ Uncomment the corresponding lines in `electron-builder.yml` once you have them.
 
 | Platform | Status | Notes |
 | --- | --- | --- |
-| macOS (arm64 / x64) | ✅ Full | Vibrancy blur, hidden-inset titlebar, traffic-light positioning |
+| macOS (arm64 / Apple Silicon) | ✅ Full | Vibrancy blur, hidden-inset titlebar, traffic-light positioning |
 | Windows 10/11 | ✅ Works | Vibrancy falls back to flat background; build an NSIS installer |
 | Linux (Ubuntu/Fedora) | ✅ Works | Build AppImage; vibrancy falls back; needs `libnss3 libgtk-3-0 libasound2` at runtime |
 

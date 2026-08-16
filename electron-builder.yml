@@ -20,14 +20,13 @@ files:
 extraMetadata:
   main: main.js
 
-# macOS
+# macOS — Apple Silicon only (M1 / M2 / M3 / M4…)
 mac:
   category: public.app-category.music
   target:
     - target: dmg
       arch:
         - arm64
-        - x64
   hardenedRuntime: false
   gatekeeperAssess: false
   # icon: assets/icon.icns  # uncomment after adding a real .icns
