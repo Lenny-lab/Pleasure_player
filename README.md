@@ -1,9 +1,7 @@
 # 🎵 Pleasure Player
 
-[![Release v0.1.0](https://img.shields.io/github/v/release/Lenny-lab/Pleasure_player?label=Download&style=for-the-badge&color=0071e3)](https://github.com/Lenny-lab/Pleasure_player/releases/latest)
-[![Platform](https://img.shields.io/badge/macOS-Apple%20Silicon-0071e3?style=for-the-badge)](https://github.com/Lenny-lab/Pleasure_player/releases/latest)
-[![License](https://img.shields.io/github/license/Lenny-lab/Pleasure_player?style=for-the-badge)](LICENSE)
-
+> **📥 [Download v0.1.0 for macOS (Apple Silicon · 93 MB)](https://github.com/Lenny-lab/Pleasure_player/releases/latest)**
+>
 > Apple-style local music player — lock a folder, drop in audio files, get instant Apple-Music vibes.
 
 ![Main interface](assets/screenshot-main.png)
