@@ -1,0 +1,68 @@
+appId: com.lennyli.pleasure-player
+productName: Pleasure
+copyright: Copyright © 2026 Lennyli
+asar: true
+compression: maximum
+artifactName: ${productName}-${version}-${arch}.${ext}
+
+directories:
+  output: dist
+  buildResources: assets
+
+files:
+  - "**/*"
+  - "!**/.*"
+  - "!node_modules/{electron,electron-builder,electron-builder-binaries}"
+  - "!**/{.editorconfig,.gitignore,.nvmrc,*.md,LICENSE,electron-builder.yml,package-lock.json}"
+  - "!dist/**"
+  - "!docs/**"
+
+extraMetadata:
+  main: main.js
+
+# macOS
+mac:
+  category: public.app-category.music
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  # icon: assets/icon.icns  # uncomment after adding a real .icns
+
+# Windows
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  # icon: assets/icon.ico  # uncomment after adding a real .ico
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Pleasure
+
+# Linux
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+  category: Audio
+  desktop:
+    Name: Pleasure
+    Comment: Apple-style local music player
+    Categories: Audio;Music;Player;
+  # icon: assets/icon.png  # uncomment after adding a real 512x512 png
+
+# Auto-update is intentionally disabled — single-user local app.
+publish: null

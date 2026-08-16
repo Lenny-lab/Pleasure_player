@@ -1,0 +1,91 @@
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Build output
+dist/
+out/
+build/
+release/
+*.exe
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+*.zip
+*.tar.gz
+*.blockmap
+*.snap
+
+# Electron / electron-builder
+.cache/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs/
+.pnpm-debug.log*
+
+# Runtime / user data
+# (Electron app writes here at runtime; do NOT commit user state)
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.iml
+*~
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Coverage / test
+coverage/
+.nyc_output/
+*.lcov
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
+.eslintcache
+.stylelintcache
+.parcel-cache
+.turbo
+.turbo-cache
+.cache-loader
+
+# Build artifacts that should be regenerated
+*.tsbuildinfo
+
+# Local-only working files (not committed)
+figure/
+assets/.DS_Store

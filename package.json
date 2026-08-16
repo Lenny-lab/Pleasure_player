@@ -1,0 +1,49 @@
+{
+  "name": "pleasure-player",
+  "version": "0.1.0",
+  "description": "Apple-style local music player — lock a folder, drop in audio files, get instant Apple-Music vibes.",
+  "main": "main.js",
+  "author": {
+    "name": "Lennyli",
+    "email": "lennyli663@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/lennyli/pleasure-player",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lennyli/pleasure-player.git"
+  },
+  "bugs": {
+    "url": "https://github.com/lennyli/pleasure-player/issues"
+  },
+  "keywords": [
+    "electron",
+    "music-player",
+    "flac",
+    "apple-music",
+    "lyrics",
+    "macos",
+    "desktop"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "electron .",
+    "start:test": "electron . --autoplay",
+    "build": "electron-builder",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "build:dir": "electron-builder --dir"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.1",
+    "music-metadata": "^7.14.0"
+  },
+  "devDependencies": {
+    "electron": "^32.3.3",
+    "electron-builder": "^25.1.8"
+  }
+}

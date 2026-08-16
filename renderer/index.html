@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; media-src 'self' music: dev-test: data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self';" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pleasure</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- 标题栏拖动区（macOS 隐藏标题栏后保留红绿黄灯） -->
+    <div class="titlebar">
+      <div class="titlebar-spacer"></div>
+      <div class="titlebar-title" id="title">Pleasure</div>
+      <div class="titlebar-actions">
+        <button class="ghost-btn" id="btnOpenDir" title="在 Finder 中打开">📁</button>
+        <button class="ghost-btn" id="btnUnlock" title="退出当前文件夹">⏏</button>
+      </div>
+    </div>
+
+    <div class="dir-banner" id="dirBanner">
+      <span class="dir-icon">🎵</span>
+      <span class="dir-path" id="dirPath">—</span>
+    </div>
+
+    <main class="main">
+      <!-- 左侧：歌曲列表 -->
+      <section class="panel list-panel">
+        <header class="panel-header">
+          <h2>曲目</h2>
+          <span class="track-count" id="trackCount">0</span>
+        </header>
+        <div class="list" id="list">
+          <div class="list-empty" id="listEmpty">
+            <div class="list-empty-icon">📂</div>
+            <div class="list-empty-title">把音乐文件夹拖进来</div>
+            <div class="list-empty-sub">或者点右上 ⇄ 选择一个文件夹<br>支持 FLAC / MP3 / M4A / AAC / OGG / WAV</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右侧：当前播放 / 封面 -->
+      <section class="panel now-panel">
+        <div class="art-wrap">
+          <div class="art" id="art">
+            <div class="art-placeholder">
+              <span>♪</span>
+            </div>
+          </div>
+        </div>
+        <div class="meta">
+          <h1 class="title" id="metaTitle">未在播放</h1>
+          <p class="artist" id="metaArtist">选一首歌开始</p>
+        </div>
+
+        <div class="progress">
+          <span class="time" id="curTime">0:00</span>
+          <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-thumb" id="progressThumb"></div>
+          </div>
+          <span class="time" id="durTime">0:00</span>
+        </div>
+
+        <div class="controls">
+          <button class="ctrl ctrl-mode" id="btnMode" title="播放模式" data-mode="sequence">🔁</button>
+          <button class="ctrl" id="btnPrev" title="上一首">⏮</button>
+          <button class="ctrl ctrl-play" id="btnPlay" title="播放/暂停">▶</button>
+          <button class="ctrl" id="btnNext" title="下一首">⏭</button>
+          <button class="ctrl" id="btnLyrics" title="歌词">𝓛</button>
+        </div>
+
+        <div class="volume">
+          <span class="vol-icon">🔈</span>
+          <input type="range" id="volume" min="0" max="1" step="0.01" value="0.8" />
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 歌词全屏页 -->
+  <div class="lyrics-page" id="lyricsPage" hidden>
+    <button class="lyrics-close" id="lyricsClose" aria-label="关闭">×</button>
+    <div class="lyrics-art" id="lyricsArt"></div>
+    <div class="lyrics-content">
+      <div class="lyrics-header">
+        <h2 id="lyricsTitle">—</h2>
+        <p id="lyricsArtist">—</p>
+      </div>
+      <div class="lyrics-list" id="lyricsList"></div>
+    </div>
+  </div>
+
+  <audio id="audio" preload="metadata"></audio>
+
+  <!-- 拖拽文件夹反馈层 -->
+  <div class="drop-overlay" id="dropOverlay" hidden>
+    <div class="drop-card">
+      <div class="drop-icon">📂</div>
+      <h2>拖入文件夹</h2>
+      <p>松手后切换到该文件夹扫描</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
