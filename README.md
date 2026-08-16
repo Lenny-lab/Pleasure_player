@@ -33,7 +33,7 @@ An Electron-based desktop music player that **watches a local folder for audio f
 
 This project was born out of a very specific frustration.
 
-蔡依林（Jolin Tsai）的专辑 *Pleasure* 一直没有上架 Apple Music。想听的话只能去贴吧 / 网盘下载 FLAC 资源——但既然专辑不在 Apple Music 里，导入、配库、传到设备这一整套 Apple Music 流程就跑不通。直接双击文件用 QuickTime 听？又没法看歌词、控制前后曲目。
+蔡依林（Jolin Tsai）的专辑 *Pleasure* 一直没有上架 Apple Music。想听的话只能去贴吧 / 网盘下载 FLAC 资源——虽然专辑有了本地音源，但要想真正在 Apple Music 里播放，导入、配库、传到设备这一整套流程必不可少，可自己也实在不想折腾。直接双击文件用 QuickTime 听？又没法看歌词、控制前后曲目。
 
 于是就有了 **Pleasure**：
 
