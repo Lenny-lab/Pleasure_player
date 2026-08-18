@@ -222,9 +222,10 @@ function prev() {
   if (idx >= 0) playIndex(idx);
 }
 
-// 单曲循环：直接用 HTMLAudioElement.loop 属性，浏览器原生处理，不需要 ended 事件
+// 单曲循环：不用 audio.loop（Chromium 在 FLAC 上有 bug，会直接停掉），
+// 改在 ended 事件里手动 currentTime=0 + play()，对所有格式都稳
 function applyPlayMode() {
-  audio.loop = (playMode === 'loop-one');
+  audio.loop = false;
 }
 
 function onTrackChange(t) {
@@ -371,10 +372,16 @@ document.addEventListener('mousemove', (e) => { if (dragging) seekFromEvent(e); 
 document.addEventListener('mouseup', () => { dragging = false; });
 
 audio.addEventListener('timeupdate', updateProgress);
-// 单曲循环由 audio.loop 接管（浏览器原生处理，不会触发 ended 事件）
-// 所以这里只处理 sequence 模式：播完一首停下
+// 模式逻辑（applyPlayMode 已禁掉 audio.loop，自己处理 ended）：
+//   sequence  → 切到下一首（最后一首时停在末尾）
+//   loop-one  → currentTime 归零，重播当前曲
 audio.addEventListener('ended', () => {
-  if (playMode === 'sequence') next();
+  if (playMode === 'loop-one') {
+    audio.currentTime = 0;
+    audio.play().catch((e) => console.warn('[loop-one] replay failed:', e));
+  } else if (playMode === 'sequence') {
+    next();
+  }
 });
 audio.addEventListener('error', () => {
   const err = audio.error;
