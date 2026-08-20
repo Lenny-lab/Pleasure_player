@@ -85,6 +85,16 @@ function shuffleArray(arr) {
 // (shuffleArray 保留备用，目前 2 态不调用)
 
 // ====== 列表渲染 ======
+// 与主进程一致的排序：先 relDir（同一子文件夹聚一起），再 trackNo，再标题
+function sortTracksInPlace(arr) {
+  arr.sort((a, b) => {
+    const ad = a.relDir || '', bd = b.relDir || '';
+    if (ad !== bd) return ad.localeCompare(bd, 'zh');
+    if (a.trackNo && b.trackNo) return a.trackNo - b.trackNo;
+    return a.title.localeCompare(b.title, 'zh');
+  });
+}
+
 function renderList() {
   listEl.innerHTML = '';
   if (tracks.length === 0) {
@@ -97,7 +107,25 @@ function renderList() {
   trackCountEl.textContent = String(tracks.length).padStart(2, '0');
 
   const frag = document.createDocumentFragment();
+
+  // 按 relDir 分组（同子文件夹的歌聚一起），保留全局顺序
+  let lastDir = '__UNSET__';        // 哨兵：保证第一组也会触发 header
   tracks.forEach((t, i) => {
+    const dir = t.relDir || '';
+    if (dir !== lastDir) {
+      // 新组开始，插一个 section header
+      const header = document.createElement('div');
+      header.className = 'folder-header';
+      if (dir) {
+        header.textContent = '📁  ' + dir;
+      } else {
+        // 根目录文件用「根目录」标签
+        header.textContent = '📄  根目录';
+      }
+      frag.appendChild(header);
+      lastDir = dir;
+    }
+
     const row = document.createElement('div');
     row.className = 'track';
     row.dataset.idx = i;
@@ -455,7 +483,7 @@ audio.addEventListener('pause', () => {
   window.musicAPI.onAdded((t) => {
     if (tracks.some(x => x.id === t.id)) return;
     tracks.push(t);
-    tracks.sort((a, b) => (a.trackNo || 999) - (b.trackNo || 999));
+    sortTracksInPlace(tracks);
     renderList();
   });
   window.musicAPI.onRemoved((id) => {

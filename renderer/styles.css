@@ -200,6 +200,34 @@ body.has-dir .dir-banner { display: flex; }
 
 /* .list-empty 完整定义见下方"列表空态" */
 
+/* ====== 子文件夹分组头 ====== */
+.folder-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px 6px 16px;
+  margin: 4px 6px 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  /* 与 .track 的左侧对齐（cover 列前） */
+  position: relative;
+}
+.folder-header::before {
+  content: '';
+  flex-shrink: 0;
+  width: 36px;       /* 对齐 .track 第一列（num） */
+  text-align: center;
+}
+.folder-header:not(:first-child) {
+  margin-top: 8px;
+  border-top: 1px solid var(--divider);
+  padding-top: 16px;
+}
+
 .track {
   display: grid;
   grid-template-columns: 36px 44px 1fr auto;

@@ -114,21 +114,79 @@ async function parseTrack(filePath) {
   }
 }
 
-// ====== 扫描目录 ======
-async function scanDirectory(dir) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  console.log(`[scan] readdir ${dir} returned ${entries.length} entries`);
-  const audioFiles = entries
-    .filter(e => e.isFile() && /\.(flac|mp3|m4a|aac|ogg|wav)$/i.test(e.name))
-    .map(e => path.join(dir, e.name));
-  console.log(`[scan] ${audioFiles.length} audio files matched`);
-  const results = await Promise.all(audioFiles.map(parseTrack));
-  const ok = results.filter(Boolean);
-  console.log(`[scan] ${ok.length} tracks parsed successfully`);
-  return ok.sort((a, b) => {
+// ====== 扫描目录（递归） ======
+// 标准安全网：跳过版本控制 / macOS 索引 / Windows 系统目录 / 隐藏文件 / 资源叉
+const SKIP_DIRS = new Set([
+  '.git', '.svn', '.hg',
+  '.Trashes', '.Spotlight-V100', '.fseventsd', '.DocumentRevisions-V100',
+  'System Volume Information', '$RECYCLE.BIN',
+  'node_modules',
+]);
+function shouldSkipEntry(name) {
+  if (name.startsWith('.')) return true;        // .DS_Store, .git, .Trashes …
+  if (name.startsWith('._')) return true;       // macOS resource forks
+  if (SKIP_DIRS.has(name)) return true;
+  return false;
+}
+
+// 共享排序：先按所在子目录（同一专辑聚一起），再按 trackNo，最后按标题
+function sortTracksInPlace(arr) {
+  arr.sort((a, b) => {
+    const ad = a.relDir || '', bd = b.relDir || '';
+    if (ad !== bd) return ad.localeCompare(bd, 'zh');
     if (a.trackNo && b.trackNo) return a.trackNo - b.trackNo;
     return a.title.localeCompare(b.title, 'zh');
   });
+}
+
+async function scanDirectory(dir, baseDir) {
+  if (baseDir === undefined) baseDir = dir;
+  let entries;
+  try {
+    entries = await fs.readdir(dir, { withFileTypes: true });
+  } catch (e) {
+    console.warn(`[scan] readdir failed for ${dir}:`, e.message);
+    return [];
+  }
+  console.log(`[scan] readdir ${dir} returned ${entries.length} entries`);
+
+  const audioFiles = [];
+  const subdirs = [];
+  for (const e of entries) {
+    if (shouldSkipEntry(e.name)) continue;
+    const full = path.join(dir, e.name);
+    if (e.isFile() && /\.(flac|mp3|m4a|aac|ogg|wav)$/i.test(e.name)) {
+      audioFiles.push(full);
+    } else if (e.isDirectory()) {
+      subdirs.push(full);
+    }
+  }
+  console.log(`[scan] ${audioFiles.length} audio + ${subdirs.length} subdirs in ${dir}`);
+
+  // 并行扫所有子目录
+  const subResults = await Promise.all(subdirs.map(s => scanDirectory(s, baseDir)));
+
+  // 合并 + 去重（防 symlink 环）
+  const seen = new Set();
+  const allFiles = [];
+  for (const f of [...audioFiles, ...subResults.flat()]) {
+    if (!seen.has(f)) { seen.add(f); allFiles.push(f); }
+  }
+
+  const results = await Promise.all(allFiles.map(parseTrack));
+  const ok = results.filter(Boolean);
+
+  // 给每个 track 加 relDir（相对 baseDir 的目录路径，根目录文件 = ''）
+  ok.forEach(t => {
+    const rel = path.relative(baseDir, t.path);
+    t.relPath = rel;
+    t.relDir = path.dirname(rel) === '.' ? '' : path.dirname(rel);
+  });
+
+  console.log(`[scan] ${ok.length} tracks parsed successfully under ${dir}`);
+
+  sortTracksInPlace(ok);
+  return ok;
 }
 
 // ====== 启动监听 ======
@@ -140,19 +198,23 @@ function startWatcher(dir) {
   watcher = chokidar.watch(dir, {
     persistent: true,
     ignoreInitial: true,
-    depth: 0,
+    // depth: 0  // 已移除——现在递归监听所有子目录
     usePolling: isPackaged,         // dev 走 fsevents（更快），打包后走 polling
     interval: 1000,
     binaryInterval: 2000,
     awaitWriteFinish: { stabilityThreshold: 800, pollInterval: 200 },
+    ignored: (p) => shouldSkipEntry(path.basename(p)),
   });
   watcher.on('add', async (filePath) => {
     if (!/\.(flac|mp3|m4a|aac|ogg|wav)$/i.test(filePath)) return;
     const track = await parseTrack(filePath);
     if (!track) return;
     if (tracks.some(t => t.id === track.id)) return;
+    const rel = path.relative(MUSIC_DIR, filePath);
+    track.relPath = rel;
+    track.relDir = path.dirname(rel) === '.' ? '' : path.dirname(rel);
     tracks.push(track);
-    tracks.sort((a, b) => (a.trackNo || 999) - (b.trackNo || 999));
+    sortTracksInPlace(tracks);
     if (mainWindow) mainWindow.webContents.send('music:added', track);
   });
   watcher.on('unlink', (filePath) => {
