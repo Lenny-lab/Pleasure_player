@@ -1,6 +1,6 @@
 {
   "name": "pleasure-player",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "Apple-style local music player — lock a folder, drop in audio files, get instant Apple-Music vibes.",
   "main": "main.js",
   "author": {
